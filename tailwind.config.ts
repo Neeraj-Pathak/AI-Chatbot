@@ -61,7 +61,16 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Chat specific colors
+				'chat-bg': 'hsl(var(--chat-bg))',
+				'message-user': 'hsl(var(--message-user))',
+				'message-bot': 'hsl(var(--message-bot))',
+				'message-hover': 'hsl(var(--message-hover))',
+				'sidebar-bg': 'hsl(var(--sidebar-bg))',
+				'sidebar-hover': 'hsl(var(--sidebar-hover))',
+				'sidebar-active': 'hsl(var(--sidebar-active))',
+				'sidebar-active-fg': 'hsl(var(--sidebar-active-fg))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
