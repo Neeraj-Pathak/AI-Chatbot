@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
@@ -28,20 +27,15 @@ export const ChatSidebar = ({ chats, activeChat, onChatSelect, onNewChat }: Chat
       <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-lg font-semibold text-foreground">Chatbot</h1>
-          <Button
-            onClick={onNewChat}
-            size="sm"
-            variant="outline"
-            className="h-8 w-8 p-0"
-          >
+          <Button onClick={onNewChat} size="sm" variant="outline" className="h-8 w-8 p-0">
             <Plus className="h-4 w-4" />
           </Button>
         </div>
-        
+
         {/* User info */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <User className="h-4 w-4" />
-          <span className="truncate">{user?.email}</span>
+          <span className="truncate">{user?.displayName || user?.email}</span>
         </div>
       </div>
 
@@ -56,7 +50,7 @@ export const ChatSidebar = ({ chats, activeChat, onChatSelect, onNewChat }: Chat
             </div>
           ) : (
             <div className="space-y-1">
-              {chats.map((chat) => (
+              {chats.map(chat => (
                 <button
                   key={chat.id}
                   onClick={() => onChatSelect(chat.id)}
@@ -66,13 +60,9 @@ export const ChatSidebar = ({ chats, activeChat, onChatSelect, onNewChat }: Chat
                       : 'hover:bg-sidebar-hover'
                   }`}
                 >
-                  <div className="font-medium text-sm truncate mb-1">
-                    {chat.title}
-                  </div>
+                  <div className="font-medium text-sm truncate mb-1">{chat.title}</div>
                   {chat.lastMessage && (
-                    <div className="text-xs text-muted-foreground truncate">
-                      {chat.lastMessage}
-                    </div>
+                    <div className="text-xs text-muted-foreground truncate">{chat.lastMessage}</div>
                   )}
                   <div className="text-xs text-muted-foreground mt-1">
                     {new Date(chat.updatedAt).toLocaleDateString()}

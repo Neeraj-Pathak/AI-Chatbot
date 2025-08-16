@@ -8,101 +8,95 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 215 25% 15%;
+    --background: 40 30% 96%;        /* very light beige */
+    --foreground: 30 15% 15%;        /* dark brown for text */
 
-    --card: 0 0% 100%;
-    --card-foreground: 215 25% 15%;
+    --card: 40 35% 100%;             /* card background */
+    --card-foreground: 30 15% 15%;   /* card text */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 15%;
+    --popover: 40 35% 100%;
+    --popover-foreground: 30 15% 15%;
 
-    --primary: 215 25% 25%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 40 25% 70%;           /* soft beige button */
+    --primary-foreground: 30 15% 15%;
 
-    --secondary: 210 15% 92%;
-    --secondary-foreground: 215 25% 15%;
+    --secondary: 40 25% 90%;         /* light accent */
+    --secondary-foreground: 30 15% 15%;
 
-    --muted: 210 15% 95%;
-    --muted-foreground: 215 15% 50%;
+    --muted: 40 20% 95%;
+    /* --muted-foreground: 30 15% 50%; */
 
-    --accent: 210 15% 90%;
-    --accent-foreground: 215 25% 15%;
+    --accent: 35 25% 85%;
+    --accent-foreground: 30 15% 15%;
 
-    --destructive: 0 70% 55%;
+    --destructive: 0 70% 55%;        /* keep red for destructive actions */
     --destructive-foreground: 0 0% 98%;
 
-    --border: 210 15% 88%;
-    --input: 210 15% 88%;
-    --ring: 215 25% 25%;
+    --border: 40 20% 85%;
+    --input: 40 20% 85%;
+    --ring: 40 25% 70%;
 
     /* Chat specific colors */
-    --chat-bg: 210 20% 96%;
-    --message-user: 215 20% 88%;
-    --message-bot: 0 0% 100%;
-    --message-hover: 210 15% 92%;
-    
+    --chat-bg: 40 30% 92%;
+    --message-user: 40 25% 88%;
+    --message-bot: 40 35% 100%;
+    --message-hover: 40 25% 90%;
+
     /* Sidebar colors */
-    --sidebar-bg: 210 15% 94%;
-    --sidebar-hover: 210 15% 90%;
-    --sidebar-active: 215 25% 25%;
-    --sidebar-active-fg: 0 0% 98%;
+    --sidebar-bg: 40 25% 92%;
+    --sidebar-hover: 40 25% 85%;
+    --sidebar-active: 40 30% 70%;
+    --sidebar-active-fg: 30 15% 15%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 40 30% 96%;
+    --sidebar-foreground: 30 15% 20%;
+    --sidebar-primary: 40 25% 70%;
+    --sidebar-primary-foreground: 30 15% 15%;
+    --sidebar-accent: 35 25% 85%;
+    --sidebar-accent-foreground: 30 15% 15%;
+    --sidebar-border: 40 20% 85%;
+    --sidebar-ring: 40 25% 70%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 40 15% 12%;
+    --foreground: 30 15% 95%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 40 15% 12%;
+    --card-foreground: 30 15% 95%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 40 15% 12%;
+    --popover-foreground: 30 15% 95%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 40 15% 90%;
+    --primary-foreground: 40 15% 12%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 35 15% 25%;
+    --secondary-foreground: 30 15% 95%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 35 15% 25%;
+    --muted-foreground: 30 15% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 35 15% 25%;
+    --accent-foreground: 30 15% 95%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 30 15% 95%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --border: 35 15% 25%;
+    --input: 35 15% 25%;
+    --ring: 40 25% 70%;
+
+    --sidebar-background: 40 15% 12%;
+    --sidebar-foreground: 30 15% 95%;
+    --sidebar-primary: 40 25% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 35 15% 20%;
+    --sidebar-accent-foreground: 30 15% 95%;
+    --sidebar-border: 35 15% 20%;
+    --sidebar-ring: 40 25% 70%;
   }
 }
 

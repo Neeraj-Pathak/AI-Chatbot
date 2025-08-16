@@ -1,0 +1,156 @@
+AI Chatbot Application – Internship Project
+1. Project Overview
+
+This is a full-stack AI Chatbot application featuring:
+
+Secure user authentication
+Real-time messaging
+AI-powered responses
+Technologies used: Hasura GraphQL, n8n, OpenRouter GPT-5 Chat API
+
+Key Features:
+
+Email-based sign-in/sign-up using Nhost Auth
+User-specific chats with row-level security (RLS)
+AI-powered chatbot responses via OpenRouter GPT-5
+Real-time updates via GraphQL subscriptions
+Fully hosted frontend on Netlify
+
+2. Tech Stack
+
+Frontend:
+
+React / Next.js
+Tailwind CSS (custom theme)
+Nhost Auth (Email authentication)
+Apollo Client (GraphQL)
+
+Backend / Database:
+
+Hasura GraphQL on PostgreSQL
+Tables: chats, messages
+RLS for user-specific data access
+
+Automation & AI:
+
+n8n workflow: validates users, calls OpenRouter, updates Hasura
+OpenRouter API: GPT-5 Chat model for AI responses
+
+Hosting:
+
+Frontend: Netlify
+n8n: Cloud instance or Docker
+Hasura: Cloud or Docker deployment
+
+3. Architecture Diagram
+[User] --> [Frontend: React + Apollo] --> [Hasura GraphQL]
+                                       \
+                                        --> [n8n Workflow] --> [OpenRouter GPT-5 Chat] --> [Hasura DB] --> Back to Frontend
+
+
+Flow:
+
+User sends a message in the frontend
+Message is saved in Hasura messages table via InsertUserMessage mutation
+Hasura Action triggers n8n webhook: /webhook/hasura-sendMessage
+
+n8n workflow:
+
+Validates chat_id ownership using GetChatOwner query
+Calls OpenRouter GPT-5 API for AI response
+Saves AI response back to Hasura via InsertAssistantMessage mutation
+Frontend displays AI response via GraphQL subscription
+
+4. Database Structure
+
+chats Table
+
+Column	Type	Description
+id	UUID	Primary key
+user_id	UUID	Owner of chat
+title	String	Chat title
+updated_at	Timestamp	Last updated
+
+messages Table
+
+Column	Type	Description
+id	UUID	Primary key
+chat_id	UUID	Foreign key to chats
+user_id	UUID	Sender ID
+role	String	user or assistant
+content	Text	Message content
+created_at	Timestamp	When message was sent
+
+RLS Policies:
+
+Users can only access chats and messages they own
+
+5. n8n Workflow Details
+
+Webhook Node:
+
+Path: /webhook/hasura-sendMessage
+Method: POST
+Receives Hasura Action payload
+
+HTTP Request 1:
+
+Inserts user message into messages table using InsertUserMessage mutation
+
+HTTP Request 2:
+
+Validates chat ownership with GetChatOwner query
+
+OpenRouter - Chat Node:
+
+Calls OpenRouter GPT-5 API
+URL: https://openrouter.ai/api/v1/chat/completions
+Authorization: Bearer <OPENROUTER_API_KEY>
+Sends messages from the user
+
+HTTP Request 3:
+
+Inserts assistant message into messages table using InsertAssistantMessage mutation
+Set Node – Edit Fields:
+Formats response for Hasura Action response
+
+6. Frontend Features
+
+Chat Sidebar: List of chats, create new chat
+Message View: Displays user and AI messages
+Real-time updates: GraphQL subscriptions
+Authentication: Only logged-in users can access chats
+
+7. Hosting
+
+Frontend (Netlify):
+
+Push frontend code to GitHub
+Connect repository to Netlify
+Add environment variables:
+REACT_APP_NHOST_URL=<your-nhost-url>
+REACT_APP_OPENROUTER_API_KEY=<your-api-key>
+
+
+Build command:
+
+npm run build
+
+
+Publish directory: build (React) or out (Next.js static export)
+n8n & Hasura: Deploy via Cloud or Docker
+
+8. Demo Flow
+
+User signs up/signs in via email
+Creates a new chat
+Sends a message → saved in Hasura
+Hasura Action triggers n8n → calls OpenRouter → saves AI response
+AI response displayed in frontend via GraphQL subscription
+
+9. Notes
+
+All frontend requests use GraphQL only
+RLS in Hasura ensures security
+Sensitive credentials are managed via environment variables
+All external API calls go through n8n, never directly from frontend

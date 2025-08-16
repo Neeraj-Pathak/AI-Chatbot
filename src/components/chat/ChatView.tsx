@@ -24,14 +24,11 @@ export const ChatView = ({ chatId, messages, onSendMessage }: ChatViewProps) => 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
+  // Auto scroll to bottom when messages change
   useEffect(() => {
-    // Scroll to bottom when new messages arrive
-    if (scrollAreaRef.current) {
-      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
-      if (scrollContainer) {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
-      }
-    }
+    if (!scrollAreaRef.current) return;
+    const container = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+    if (container) container.scrollTop = container.scrollHeight;
   }, [messages]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,9 +40,8 @@ export const ChatView = ({ chatId, messages, onSendMessage }: ChatViewProps) => 
     setIsLoading(true);
 
     try {
-      // This will trigger the GraphQL mutation and Hasura Action
       await onSendMessage(messageContent);
-    } catch (error) {
+    } catch {
       toast({
         title: "Failed to send message",
         description: "Please try again",
@@ -70,7 +66,6 @@ export const ChatView = ({ chatId, messages, onSendMessage }: ChatViewProps) => 
 
   return (
     <div className="flex-1 flex flex-col bg-chat-bg">
-      {/* Messages */}
       <ScrollArea ref={scrollAreaRef} className="flex-1 p-4">
         <div className="space-y-4 max-w-4xl mx-auto">
           {messages.length === 0 ? (
@@ -79,7 +74,7 @@ export const ChatView = ({ chatId, messages, onSendMessage }: ChatViewProps) => 
               <p className="text-sm">Start a conversation with your AI assistant</p>
             </div>
           ) : (
-            messages.map((message) => (
+            messages.map(message => (
               <div
                 key={message.id}
                 className={`flex gap-3 ${message.isBot ? 'justify-start' : 'justify-end'}`}
@@ -89,7 +84,7 @@ export const ChatView = ({ chatId, messages, onSendMessage }: ChatViewProps) => 
                     <Bot className="h-4 w-4 text-primary-foreground" />
                   </div>
                 )}
-                
+
                 <div
                   className={`max-w-[70%] p-3 rounded-lg ${
                     message.isBot
@@ -111,39 +106,34 @@ export const ChatView = ({ chatId, messages, onSendMessage }: ChatViewProps) => 
               </div>
             ))
           )}
-          
+
           {isLoading && (
             <div className="flex gap-3">
               <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
                 <Bot className="h-4 w-4 text-primary-foreground" />
               </div>
-              <div className="bg-message-bot border border-border p-3 rounded-lg">
-                <div className="flex gap-1">
-                  <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                  <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                </div>
+              <div className="bg-message-bot border border-border p-3 rounded-lg flex gap-1">
+                <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
               </div>
             </div>
           )}
         </div>
       </ScrollArea>
 
-      {/* Input */}
       <div className="border-t border-border p-4">
-        <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
-          <div className="flex gap-2">
-            <Input
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Type your message..."
-              disabled={isLoading}
-              className="flex-1"
-            />
-            <Button type="submit" disabled={isLoading || !inputValue.trim()}>
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
+        <form onSubmit={handleSubmit} className="max-w-4xl mx-auto flex gap-2">
+          <Input
+            value={inputValue}
+            onChange={e => setInputValue(e.target.value)}
+            placeholder="Type your message..."
+            disabled={isLoading}
+            className="flex-1"
+          />
+          <Button type="submit" disabled={isLoading || !inputValue.trim()}>
+            <Send className="h-4 w-4" />
+          </Button>
         </form>
       </div>
     </div>
