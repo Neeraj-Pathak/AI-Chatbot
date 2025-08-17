@@ -1,4 +1,3 @@
-// AuthForm.tsx
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Mail } from 'lucide-react';
 import clsx from 'clsx';
 
 const authSchema = z.object({
@@ -23,6 +22,7 @@ export const AuthForm = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [pendingVerification, setPendingVerification] = useState<string | null>(null);
 
   const { signIn, signUp } = useAuth();
   const { toast } = useToast();
@@ -46,28 +46,72 @@ export const AuthForm = () => {
       let result;
       if (isSignUp) {
         result = await signUp(data.email, data.password, data.name || '');
-        if (result.error) throw new Error(result.error);
-
-        toast({
-          title: 'Account created',
-          description: `Please check your inbox to verify your email before logging in.`,
-        });
+        if (result.error) {
+          if (result.error.includes("429")) {
+            throw new Error("Too many requests. Please wait a few minutes before trying again.");
+          }
+          throw new Error(result.error);
+        }
+        setPendingVerification(data.email);
       } else {
         result = await signIn(data.email, data.password);
-        if (result.error) throw new Error(result.error);
+        if (result.error) {
+          if (result.error.includes("401")) {
+            throw new Error("Invalid email or password.");
+          }
+          if (result.error.toLowerCase().includes("email not verified")) {
+            throw new Error("Please verify your email before signing in.");
+          }
+          throw new Error(result.error);
+        }
 
-        toast({ title: 'Signed in', description: 'Welcome back!' });
+        toast({ title: "Signed in", description: "Welcome back!" });
       }
     } catch (error: any) {
       toast({
-        title: 'Authentication failed',
-        description: error.message || 'Please try again',
-        variant: 'destructive',
+        title: "Authentication failed",
+        description: error.message || "Please try again",
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
     }
   };
+
+  // ✅ Show "Check your email" screen after signup
+  if (pendingVerification) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4">
+        <Card className="w-full max-w-md shadow-lg text-center p-6">
+          <div className="flex justify-center mb-4">
+            <Mail className="w-10 h-10 text-amber-700" />
+          </div>
+          <CardHeader>
+            <CardTitle className="text-2xl font-semibold">Check Your Email!</CardTitle>
+            <CardDescription>
+              We’ve sent a verification email to:
+              <br />
+              <span className="font-medium">{pendingVerification}</span>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">
+              📧 Check your inbox and click the verification link to activate your account.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              🔍 Don’t see the email? Check your spam/junk folder.
+            </p>
+            <Button
+              onClick={() => setPendingVerification(null)}
+              className="mt-6 w-full bg-amber-700 hover:bg-amber-800"
+            >
+              Back to Sign In
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4 transition-colors duration-300">
@@ -149,8 +193,9 @@ export const AuthForm = () => {
           <div className="mt-6 text-center">
             <button
               type="button"
-              onClick={() => setIsSignUp(!isSignUp)}
+              onClick={() => !loading && setIsSignUp(!isSignUp)}
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              disabled={loading}
             >
               {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
             </button>
