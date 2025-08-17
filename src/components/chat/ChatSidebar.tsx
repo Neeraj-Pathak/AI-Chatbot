@@ -42,7 +42,11 @@ export const ChatSidebar = ({
   const [collapsed, setCollapsed] = useState(false);
 
   const authUser = user as AuthUser;
-  const displayName = authUser?.metadata?.displayName || authUser?.displayName || authUser?.email || 'Unknown User';
+  const displayName =
+    authUser?.metadata?.displayName ||
+    authUser?.displayName ||
+    authUser?.email ||
+    'Unknown User';
 
   const handleRenameClick = (chatId: string, oldTitle: string) => {
     const newTitle = prompt('Rename chat', oldTitle);
@@ -50,16 +54,19 @@ export const ChatSidebar = ({
   };
 
   return (
-    <div className="flex flex-col h-full w-80 bg-[hsl(var(--sidebar-bg))] border-r border-[hsl(var(--sidebar-border))]">
-      
+    <div
+      className={`flex flex-col h-full border-r border-[hsl(var(--sidebar-border))] transition-all duration-300 ${
+        collapsed ? 'w-16' : 'w-80'
+      } bg-[hsl(var(--sidebar-bg))]`}
+    >
       {/* Header */}
       <div className="p-4 border-b border-[hsl(var(--sidebar-border))] flex items-center justify-between">
         {!collapsed && (
           <div className="flex items-center gap-2">
             <Coffee className="h-6 w-6 text-yellow-700" />
-            <h1 className="text-lg sm:text-xl font-extrabold font-poppins tracking-wide 
+            <h1 className="text-lg sm:text-xl font-extrabold font-poppins tracking-wide truncate
               bg-gradient-to-r from-yellow-600 via-orange-500 to-amber-700 
-              bg-clip-text text-transparent drop-shadow-sm bg-[length:200%_200%] animate-gradient-move truncate">
+              bg-clip-text text-transparent drop-shadow-sm animate-gradient-move">
               NEURA
             </h1>
           </div>
@@ -83,12 +90,14 @@ export const ChatSidebar = ({
       </div>
 
       {/* User info */}
-      {!collapsed && (
-        <div className="p-4 flex items-center gap-2 text-sm text-[hsl(var(--sidebar-foreground))] truncate">
-          <User className="h-4 w-4" />
-          <span className="truncate">{displayName}</span>
-        </div>
-      )}
+      <div
+        className={`p-4 flex items-center gap-2 text-sm text-[hsl(var(--sidebar-foreground))] truncate transition-all duration-300 ${
+          collapsed ? 'opacity-0 h-0 overflow-hidden' : ''
+        }`}
+      >
+        <User className="h-4 w-4" />
+        <span className="truncate">{displayName}</span>
+      </div>
 
       {/* Chat list */}
       <ScrollArea className="flex-1">
@@ -115,14 +124,21 @@ export const ChatSidebar = ({
                 >
                   <button
                     onClick={() => onChatSelect(chat.id)}
-                    className={`flex-1 text-left p-3 flex flex-col gap-0.5 truncate ${collapsed ? 'justify-center items-center' : ''}`}
+                    className={`flex-1 text-left p-3 flex flex-col gap-0.5 truncate ${
+                      collapsed ? 'justify-center items-center text-center' : ''
+                    }`}
                   >
                     {!collapsed ? (
                       <>
                         <div className="font-medium text-sm truncate">{chat.title}</div>
                         {chat.lastMessage && (
-                          <div className="text-xs text-[hsl(var(--sidebar-foreground))] truncate" title={chat.lastMessage}>
-                            {chat.lastMessage.length > 50 ? chat.lastMessage.slice(0, 45) + "..." : chat.lastMessage}
+                          <div
+                            className="text-xs text-[hsl(var(--sidebar-foreground))] truncate"
+                            title={chat.lastMessage}
+                          >
+                            {chat.lastMessage.length > 50
+                              ? chat.lastMessage.slice(0, 45) + '...'
+                              : chat.lastMessage}
                           </div>
                         )}
                         <div className="text-xs text-[hsl(var(--sidebar-foreground))]">
@@ -169,7 +185,9 @@ export const ChatSidebar = ({
           onClick={signOut}
           variant="ghost"
           size="sm"
-          className={`flex items-center justify-center gap-2 w-full h-10 text-[hsl(var(--sidebar-foreground))] hover:text-[hsl(var(--foreground))] ${collapsed ? 'justify-center' : ''}`}
+          className={`flex items-center justify-center gap-2 w-full h-10 text-[hsl(var(--sidebar-foreground))] hover:text-[hsl(var(--foreground))] ${
+            collapsed ? 'justify-center' : ''
+          }`}
         >
           <LogOut className="h-5 w-5" />
           {!collapsed && 'Sign Out'}
