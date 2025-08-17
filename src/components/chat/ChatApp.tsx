@@ -1,3 +1,4 @@
+// ChatApp.tsx
 import { useState, useEffect, useRef } from 'react';
 import { ChatSidebar } from './ChatSidebar';
 import { ChatView } from './ChatView';
@@ -126,7 +127,11 @@ export const ChatApp = () => {
       setChats(fetchedChats);
       if (fetchedChats.length > 0 && !activeChat) setActiveChat(fetchedChats[0].id);
     } catch {
-      toast({ title: 'Failed to fetch chats', variant: 'destructive' });
+      toast({
+        title: 'Failed to fetch chats',
+        variant: 'destructive',
+        style: { background: 'linear-gradient(to right, #6F4E37, #A9746E)', color: 'white' }
+      });
     }
   };
 
@@ -143,7 +148,11 @@ export const ChatApp = () => {
       setMessages(fetchedMessages);
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     } catch {
-      toast({ title: 'Failed to fetch messages', variant: 'destructive' });
+      toast({
+        title: 'Failed to fetch messages',
+        variant: 'destructive',
+        style: { background: 'linear-gradient(to right, #6F4E37, #A9746E)', color: 'white' }
+      });
     }
   };
 
@@ -162,51 +171,59 @@ export const ChatApp = () => {
       setChats(prev => [newChat, ...prev]);
       setActiveChat(newChat.id);
       setMessages([]);
-      toast({ title: 'New chat created', description: 'Start your conversation!' });
+      toast({
+        title: 'New chat created',
+        description: 'Start your conversation!',
+        style: { background: 'linear-gradient(to right, #6F4E37, #A9746E)', color: 'white' }
+      });
     } catch {
-      toast({ title: 'Failed to create chat', variant: 'destructive' });
+      toast({
+        title: 'Failed to create chat',
+        variant: 'destructive',
+        style: { background: 'linear-gradient(to right, #6F4E37, #A9746E)', color: 'white' }
+      });
     }
   };
 
   const handleDeleteChat = async (chatId: string) => {
-  const chatToDelete = chats.find(c => c.id === chatId);
-  if (!chatToDelete) return;
+    const chatToDelete = chats.find(c => c.id === chatId);
+    if (!chatToDelete) return;
+    if (!confirm(`Are you sure you want to delete "${chatToDelete.title}"?`)) return;
 
-  const confirmDelete = window.confirm(`Are you sure you want to delete "${chatToDelete.title}"?`);
-  if (!confirmDelete) return;
-
-  try {
-    await client.request(DELETE_CHAT, { id: chatId });
-
-    setChats(prev => {
-      const updatedChats = prev.filter(chat => chat.id !== chatId);
-
-      if (activeChat === chatId) {
-        const newActive = updatedChats[0]?.id || null;
-        setActiveChat(newActive);
-        toast({ 
-          title: 'Active chat deleted', 
-          description: newActive ? 'Switched to another chat' : 'No more chats available' 
-        });
-      } else {
-        toast({ title: 'Chat deleted' });
-      }
-
-      return updatedChats;
-    });
-  } catch {
-    toast({ title: 'Failed to delete chat', variant: 'destructive' });
-  }
-};
-
+    try {
+      await client.request(DELETE_CHAT, { id: chatId });
+      setChats(prev => {
+        const updatedChats = prev.filter(chat => chat.id !== chatId);
+        if (activeChat === chatId) setActiveChat(updatedChats[0]?.id || null);
+        return updatedChats;
+      });
+      toast({
+        title: 'Chat deleted',
+        style: { background: 'linear-gradient(to right, #6F4E37, #A9746E)', color: 'white' }
+      });
+    } catch {
+      toast({
+        title: 'Failed to delete chat',
+        variant: 'destructive',
+        style: { background: 'linear-gradient(to right, #6F4E37, #A9746E)', color: 'white' }
+      });
+    }
+  };
 
   const handleRenameChat = async (chatId: string, newTitle: string) => {
     try {
       await client.request(RENAME_CHAT, { id: chatId, title: newTitle });
       setChats(prev => prev.map(chat => (chat.id === chatId ? { ...chat, title: newTitle } : chat)));
-      toast({ title: 'Chat renamed successfully' });
+      toast({
+        title: 'Chat renamed successfully',
+        style: { background: 'linear-gradient(to right, #6F4E37, #A9746E)', color: 'white' }
+      });
     } catch {
-      toast({ title: 'Failed to rename chat', variant: 'destructive' });
+      toast({
+        title: 'Failed to rename chat',
+        variant: 'destructive',
+        style: { background: 'linear-gradient(to right, #6F4E37, #A9746E)', color: 'white' }
+      });
     }
   };
 
@@ -226,7 +243,11 @@ export const ChatApp = () => {
       await sendMessage({ chatId: activeChat, content, userId });
       fetchMessages(activeChat);
     } catch {
-      toast({ title: 'Failed to send message', variant: 'destructive' });
+      toast({
+        title: 'Failed to send message',
+        variant: 'destructive',
+        style: { background: 'linear-gradient(to right, #6F4E37, #A9746E)', color: 'white' }
+      });
     }
   };
 
@@ -246,7 +267,6 @@ export const ChatApp = () => {
         chatId={activeChat}
         messages={messages}
         onSendMessage={handleSendMessage}
-        // messagesEndRef={messagesEndRef}
       />
     </div>
   );
