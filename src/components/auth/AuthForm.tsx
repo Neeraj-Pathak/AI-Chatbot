@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+// AuthForm.tsx
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -7,8 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff, Moon, Sun } from 'lucide-react';
-import { useTheme } from 'next-themes';
+import { Eye, EyeOff } from 'lucide-react';
 import clsx from 'clsx';
 
 const authSchema = z.object({
@@ -23,14 +23,13 @@ export const AuthForm = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { theme, setTheme } = useTheme();
 
   const { signIn, signUp } = useAuth();
   const { toast } = useToast();
 
-const { register, handleSubmit, watch, formState: { errors } } = useForm<AuthFormData>({
-  resolver: zodResolver(authSchema),
-});
+  const { register, handleSubmit, watch, formState: { errors } } = useForm<AuthFormData>({
+    resolver: zodResolver(authSchema),
+  });
 
   const passwordValue = watch('password', '');
 
@@ -44,17 +43,20 @@ const { register, handleSubmit, watch, formState: { errors } } = useForm<AuthFor
   const handleAuth = async (data: AuthFormData) => {
     setLoading(true);
     try {
+      let result;
       if (isSignUp) {
-        await signUp(data.email, data.password, data.name || '');
+        result = await signUp(data.email, data.password, data.name || '');
+        if (result.error) throw new Error(result.error);
         toast({ title: 'Account created', description: `Welcome, ${data.name}!` });
       } else {
-        await signIn(data.email, data.password);
+        result = await signIn(data.email, data.password);
+        if (result.error) throw new Error(result.error);
         toast({ title: 'Signed in', description: 'Welcome back!' });
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: 'Authentication failed',
-        description: error instanceof Error ? error.message : 'Please try again',
+        description: error.message || 'Please try again',
         variant: 'destructive',
       });
     } finally {
@@ -64,8 +66,6 @@ const { register, handleSubmit, watch, formState: { errors } } = useForm<AuthFor
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4 transition-colors duration-300">
-
-      {/* Welcome Title */}
       <h1 className="text-3xl font-bold mb-4 text-foreground">AI-Chatbot</h1>
 
       <Card className="w-full max-w-md shadow-lg transition-transform">
@@ -74,10 +74,7 @@ const { register, handleSubmit, watch, formState: { errors } } = useForm<AuthFor
             {isSignUp ? 'Create Account' : 'Sign In'}
           </CardTitle>
           <CardDescription>
-            {isSignUp
-              ? 'Enter your details to create your account'
-              : 'Enter your credentials to access your chats'
-            }
+            {isSignUp ? 'Enter your details to create your account' : 'Enter your credentials to access your chats'}
           </CardDescription>
         </CardHeader>
 
@@ -113,7 +110,6 @@ const { register, handleSubmit, watch, formState: { errors } } = useForm<AuthFor
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
 
-              {/* Password strength bar */}
               {passwordValue && (
                 <div className="mt-1 h-2 w-full rounded bg-gray-200">
                   <div
@@ -148,10 +144,7 @@ const { register, handleSubmit, watch, formState: { errors } } = useForm<AuthFor
               onClick={() => setIsSignUp(!isSignUp)}
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              {isSignUp
-                ? 'Already have an account? Sign in'
-                : "Don't have an account? Sign up"
-              }
+              {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
             </button>
           </div>
         </CardContent>
