@@ -38,11 +38,12 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-// Initialize Nhost Auth client
+// Initialize Nhost Auth client using environment variables
 const nhost = new NhostClient({
-  subdomain: 'buymwspkkxhngcxtfkqm',
-  region: 'eu-central-1',
+  subdomain: import.meta.env.VITE_NHOST_SUBDOMAIN,
+  region: import.meta.env.VITE_NHOST_REGION,
 });
+
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);

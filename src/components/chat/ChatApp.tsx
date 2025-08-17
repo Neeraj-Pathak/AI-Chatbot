@@ -47,10 +47,11 @@ interface CreateChatResponse {
   };
 }
 
-const client = new GraphQLClient(
-  'https://buymwspkkxhngcxtfkqm.hasura.eu-central-1.nhost.run/v1/graphql',
-  { headers: { 'x-hasura-admin-secret': 'WT5at3Z:3Y(5lbkN4b!0,adF8v*y2,DS' } }
-);
+const client = new GraphQLClient(import.meta.env.VITE_HASURA_GRAPHQL_URL, {
+  headers: {
+    'x-hasura-admin-secret': import.meta.env.VITE_HASURA_ADMIN_SECRET,
+  },
+});
 
 const GET_CHATS = gql`
   query GetChats($userId: uuid!) {
