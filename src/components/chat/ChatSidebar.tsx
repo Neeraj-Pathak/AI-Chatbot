@@ -152,7 +152,7 @@ export const ChatSidebar = ({
                             title={chat.lastMessage}
                           >
                             {chat.lastMessage.length > 50
-                              ? chat.lastMessage.slice(0, 45) + '...'
+                              ? chat.lastMessage.slice(0, 35) + '...'
                               : chat.lastMessage}
                           </div>
                         )}
