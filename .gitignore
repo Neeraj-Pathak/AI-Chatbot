@@ -3,14 +3,22 @@ logs
 *.log
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependency directories
 node_modules
+
+# Build directories
 dist
 dist-ssr
+out             # for Next.js static export
+.build          # if used by other tools
+
+# Local env files
 *.local
+*.env
+*.env.*         # covers .env.development, .env.production, etc.
 
 # Editor directories and files
 .vscode/*
@@ -22,3 +30,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Optional: Mac / Linux system files
+Thumbs.db
+ehthumbs.db
