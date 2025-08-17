@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/components/auth/AuthProvider';
-import { MessageCircle, Plus, LogOut, User } from 'lucide-react';
+import { 
+  MessageCircle, Plus, LogOut, User, Trash2, Edit2, ChevronsLeft, ChevronsRight, Coffee 
+} from 'lucide-react'; 
 
 interface Chat {
   id: string;
@@ -16,74 +18,161 @@ interface ChatSidebarProps {
   activeChat: string | null;
   onChatSelect: (chatId: string) => void;
   onNewChat: () => void;
+  onDeleteChat: (chatId: string) => void;
+  onRenameChat?: (chatId: string, newTitle: string) => void;
 }
 
-export const ChatSidebar = ({ chats, activeChat, onChatSelect, onNewChat }: ChatSidebarProps) => {
+interface AuthUser {
+  id: string;
+  email?: string;
+  displayName?: string;
+  metadata?: { displayName?: string };
+  avatarUrl?: string;
+}
+
+export const ChatSidebar = ({
+  chats,
+  activeChat,
+  onChatSelect,
+  onNewChat,
+  onDeleteChat,
+  onRenameChat,
+}: ChatSidebarProps) => {
   const { user, signOut } = useAuth();
+  const [collapsed, setCollapsed] = useState(false);
+
+  const authUser = user as AuthUser;
+  const displayName = authUser?.metadata?.displayName || authUser?.displayName || authUser?.email || 'Unknown User';
+
+  const handleRenameClick = (chatId: string, oldTitle: string) => {
+    const newTitle = prompt('Rename chat', oldTitle);
+    if (newTitle && onRenameChat) onRenameChat(chatId, newTitle);
+  };
 
   return (
-    <div className="w-80 bg-sidebar-bg border-r border-border flex flex-col h-full">
+    <div className="flex flex-col h-full w-80 bg-[hsl(var(--sidebar-bg))] border-r border-[hsl(var(--sidebar-border))]">
+      
       {/* Header */}
-      <div className="p-4 border-b border-border">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-lg font-semibold text-foreground">Chatbot</h1>
-          <Button onClick={onNewChat} size="sm" variant="outline" className="h-8 w-8 p-0">
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
+      <div className="p-4 border-b border-[hsl(var(--sidebar-border))] flex items-center justify-between">
+        {!collapsed && (
+          <div className="flex items-center gap-2">
+            <Coffee className="h-6 w-6 text-yellow-700" />
+            <h1 className="text-lg sm:text-xl font-extrabold font-poppins tracking-wide 
+              bg-gradient-to-r from-yellow-600 via-orange-500 to-amber-700 
+              bg-clip-text text-transparent drop-shadow-sm bg-[length:200%_200%] animate-gradient-move truncate">
+              NEURA
+            </h1>
+          </div>
+        )}
 
-        {/* User info */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <User className="h-4 w-4" />
-          <span className="truncate">{user?.displayName || user?.email}</span>
+        <div className="flex gap-2 items-center">
+          {!collapsed && (
+            <Button onClick={onNewChat} size="sm" variant="outline" className="h-8 w-8 p-0">
+              <Plus className="h-4 w-4" />
+            </Button>
+          )}
+          <Button
+            onClick={() => setCollapsed(!collapsed)}
+            size="sm"
+            variant="outline"
+            className="h-8 w-8 p-0 flex items-center justify-center"
+          >
+            {collapsed ? <ChevronsRight className="h-4 w-4" /> : <ChevronsLeft className="h-4 w-4" />}
+          </Button>
         </div>
       </div>
 
+      {/* User info */}
+      {!collapsed && (
+        <div className="p-4 flex items-center gap-2 text-sm text-[hsl(var(--sidebar-foreground))] truncate">
+          <User className="h-4 w-4" />
+          <span className="truncate">{displayName}</span>
+        </div>
+      )}
+
       {/* Chat list */}
       <ScrollArea className="flex-1">
-        <div className="p-2">
+        <div className="p-2 space-y-2">
           {chats.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <MessageCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">No chats yet</p>
-              <p className="text-xs">Start a new conversation</p>
-            </div>
+            !collapsed && (
+              <div className="text-center py-8 text-muted-foreground">
+                <MessageCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <p className="text-sm">No chats yet</p>
+                <p className="text-xs">Start a new conversation</p>
+              </div>
+            )
           ) : (
-            <div className="space-y-1">
-              {chats.map(chat => (
-                <button
+            chats.map(chat => {
+              const isActive = activeChat === chat.id;
+              return (
+                <div
                   key={chat.id}
-                  onClick={() => onChatSelect(chat.id)}
-                  className={`w-full text-left p-3 rounded-lg transition-colors ${
-                    activeChat === chat.id
-                      ? 'bg-sidebar-active text-sidebar-active-fg'
-                      : 'hover:bg-sidebar-hover'
+                  className={`flex items-center justify-between rounded-lg border transition-colors overflow-hidden ${
+                    isActive
+                      ? 'bg-[hsl(var(--sidebar-active))] text-[hsl(var(--sidebar-active-fg))]'
+                      : 'bg-[hsl(var(--card))] hover:bg-[hsl(var(--sidebar-hover))] text-[hsl(var(--card-foreground))]'
                   }`}
                 >
-                  <div className="font-medium text-sm truncate mb-1">{chat.title}</div>
-                  {chat.lastMessage && (
-                    <div className="text-xs text-muted-foreground truncate">{chat.lastMessage}</div>
+                  <button
+                    onClick={() => onChatSelect(chat.id)}
+                    className={`flex-1 text-left p-3 flex flex-col gap-0.5 truncate ${collapsed ? 'justify-center items-center' : ''}`}
+                  >
+                    {!collapsed ? (
+                      <>
+                        <div className="font-medium text-sm truncate">{chat.title}</div>
+                        {chat.lastMessage && (
+                          <div className="text-xs text-[hsl(var(--sidebar-foreground))] truncate" title={chat.lastMessage}>
+                            {chat.lastMessage.length > 50 ? chat.lastMessage.slice(0, 45) + "..." : chat.lastMessage}
+                          </div>
+                        )}
+                        <div className="text-xs text-[hsl(var(--sidebar-foreground))]">
+                          {new Date(chat.updatedAt).toLocaleDateString()}
+                        </div>
+                      </>
+                    ) : (
+                      <MessageCircle className="h-5 w-5 mx-auto" />
+                    )}
+                  </button>
+
+                  {!collapsed && (
+                    <div className="flex flex-col justify-center items-center gap-1 pr-2 flex-shrink-0">
+                      {onRenameChat && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleRenameClick(chat.id, chat.title)}
+                          className="h-6 w-6 p-0 text-[hsl(var(--sidebar-foreground))] hover:text-[hsl(var(--sidebar-foreground))]"
+                        >
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => onDeleteChat(chat.id)}
+                        className="h-6 w-6 p-0 text-destructive hover:bg-destructive/10"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   )}
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {new Date(chat.updatedAt).toLocaleDateString()}
-                  </div>
-                </button>
-              ))}
-            </div>
+                </div>
+              );
+            })
           )}
         </div>
       </ScrollArea>
 
       {/* Footer */}
-      <div className="p-4 border-t border-border">
+      <div className="p-4 border-t border-[hsl(var(--sidebar-border))]">
         <Button
           onClick={signOut}
           variant="ghost"
           size="sm"
-          className="w-full justify-start text-muted-foreground hover:text-foreground"
+          className={`flex items-center justify-center gap-2 w-full h-10 text-[hsl(var(--sidebar-foreground))] hover:text-[hsl(var(--foreground))] ${collapsed ? 'justify-center' : ''}`}
         >
-          <LogOut className="h-4 w-4 mr-2" />
-          Sign Out
+          <LogOut className="h-5 w-5" />
+          {!collapsed && 'Sign Out'}
         </Button>
       </div>
     </div>

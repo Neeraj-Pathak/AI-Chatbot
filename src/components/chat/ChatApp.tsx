@@ -5,7 +5,6 @@ import { useToast } from '@/hooks/use-toast';
 import { gql, GraphQLClient } from 'graphql-request';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { sendMessage } from '@/pages/api/sendMessage';
-import { Sun, Moon } from 'lucide-react';
 
 interface Chat {
   id: string;
@@ -85,6 +84,23 @@ const CREATE_CHAT = gql`
   }
 `;
 
+const DELETE_CHAT = gql`
+  mutation DeleteChat($id: uuid!) {
+    delete_chats_by_pk(id: $id) {
+      id
+    }
+  }
+`;
+
+const RENAME_CHAT = gql`
+  mutation RenameChat($id: uuid!, $title: String!) {
+    update_chats_by_pk(pk_columns: { id: $id }, _set: { title: $title }) {
+      id
+      title
+    }
+  }
+`;
+
 export const ChatApp = () => {
   const { toast } = useToast();
   const { user } = useAuth();
@@ -124,14 +140,10 @@ export const ChatApp = () => {
         isBot: msg.role === 'assistant',
       }));
       setMessages(fetchedMessages);
-      scrollToBottom();
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     } catch {
       toast({ title: 'Failed to fetch messages', variant: 'destructive' });
     }
-  };
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => { fetchChats(); }, []);
@@ -155,31 +167,85 @@ export const ChatApp = () => {
     }
   };
 
-  const handleChatSelect = (chatId: string) => { setActiveChat(chatId); };
+  const handleDeleteChat = async (chatId: string) => {
+  const chatToDelete = chats.find(c => c.id === chatId);
+  if (!chatToDelete) return;
+
+  const confirmDelete = window.confirm(`Are you sure you want to delete "${chatToDelete.title}"?`);
+  if (!confirmDelete) return;
+
+  try {
+    await client.request(DELETE_CHAT, { id: chatId });
+
+    setChats(prev => {
+      const updatedChats = prev.filter(chat => chat.id !== chatId);
+
+      if (activeChat === chatId) {
+        const newActive = updatedChats[0]?.id || null;
+        setActiveChat(newActive);
+        toast({ 
+          title: 'Active chat deleted', 
+          description: newActive ? 'Switched to another chat' : 'No more chats available' 
+        });
+      } else {
+        toast({ title: 'Chat deleted' });
+      }
+
+      return updatedChats;
+    });
+  } catch {
+    toast({ title: 'Failed to delete chat', variant: 'destructive' });
+  }
+};
+
+
+  const handleRenameChat = async (chatId: string, newTitle: string) => {
+    try {
+      await client.request(RENAME_CHAT, { id: chatId, title: newTitle });
+      setChats(prev => prev.map(chat => (chat.id === chatId ? { ...chat, title: newTitle } : chat)));
+      toast({ title: 'Chat renamed successfully' });
+    } catch {
+      toast({ title: 'Failed to rename chat', variant: 'destructive' });
+    }
+  };
+
+  const handleChatSelect = (chatId: string) => setActiveChat(chatId);
+
   const handleSendMessage = async (content: string) => {
     if (!activeChat) return;
-    const userMessage: Message = { id: `temp-${Date.now()}`, content, role: 'user', timestamp: new Date().toISOString(), isBot: false };
+    const userMessage: Message = {
+      id: `temp-${Date.now()}`,
+      content,
+      role: 'user',
+      timestamp: new Date().toISOString(),
+      isBot: false,
+    };
     setMessages(prev => [...prev, userMessage]);
-    try { await sendMessage({ chatId: activeChat, content, userId }); fetchMessages(activeChat); } 
-    catch { toast({ title: 'Failed to send message', variant: 'destructive' }); }
+    try {
+      await sendMessage({ chatId: activeChat, content, userId });
+      fetchMessages(activeChat);
+    } catch {
+      toast({ title: 'Failed to send message', variant: 'destructive' });
+    }
   };
 
   const filteredChats = chats.filter(chat => chat.title.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
-    <div className="h-screen flex bg-background relative">    
-
+    <div className="h-screen flex bg-background relative">
       <ChatSidebar
         chats={filteredChats}
         activeChat={activeChat}
         onChatSelect={handleChatSelect}
         onNewChat={handleNewChat}
+        onDeleteChat={handleDeleteChat}
+        onRenameChat={handleRenameChat}
       />
-
       <ChatView
         chatId={activeChat}
         messages={messages}
         onSendMessage={handleSendMessage}
+        // messagesEndRef={messagesEndRef}
       />
     </div>
   );

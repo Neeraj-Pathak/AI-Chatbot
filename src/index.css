@@ -1,111 +1,54 @@
+/* Import Tailwind base, components, and utilities first */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap');
 
+
+/* Now you can define your custom base layer */
 @layer base {
   :root {
+    /* Main background */
     --background: 40 30% 96%;        /* very light beige */
     --foreground: 30 15% 15%;        /* dark brown for text */
 
-    --card: 40 35% 100%;             /* card background */
-    --card-foreground: 30 15% 15%;   /* card text */
+    --card: 40 35% 100%;             /* chat area background */
+    --card-foreground: 30 15% 15%;   /* chat text */
 
-    --popover: 40 35% 100%;
-    --popover-foreground: 30 15% 15%;
+    /* Sidebar colors (darker for contrast) */
+    --sidebar-bg: 40 20% 85%;        /* darker beige for sidebar */
+    --sidebar-hover: 40 18% 78%;
+    --sidebar-active: 40 15% 70%;
+    --sidebar-active-fg: 30 15% 15%;
 
-    --primary: 40 25% 70%;           /* soft beige button */
+    --message-user: 40 25% 88%;      /* light beige for user messages */
+    --message-bot: 40 35% 100%;      /* light card for bot */
+    --message-hover: 40 25% 90%;
+    --border: 40 20% 85%;
+
+    --sidebar-border: 40 18% 78%;
+    --sidebar-foreground: 30 15% 20%;
+
+    --primary: 40 25% 70%;
     --primary-foreground: 30 15% 15%;
-
-    --secondary: 40 25% 90%;         /* light accent */
+    --secondary: 40 25% 90%;
     --secondary-foreground: 30 15% 15%;
 
     --muted: 40 20% 95%;
-    /* --muted-foreground: 30 15% 50%; */
-
     --accent: 35 25% 85%;
     --accent-foreground: 30 15% 15%;
 
-    --destructive: 0 70% 55%;        /* keep red for destructive actions */
+    --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 98%;
 
     --border: 40 20% 85%;
     --input: 40 20% 85%;
     --ring: 40 25% 70%;
-
-    /* Chat specific colors */
-    --chat-bg: 40 30% 92%;
-    --message-user: 40 25% 88%;
-    --message-bot: 40 35% 100%;
-    --message-hover: 40 25% 90%;
-
-    /* Sidebar colors */
-    --sidebar-bg: 40 25% 92%;
-    --sidebar-hover: 40 25% 85%;
-    --sidebar-active: 40 30% 70%;
-    --sidebar-active-fg: 30 15% 15%;
-
     --radius: 0.5rem;
-
-    --sidebar-background: 40 30% 96%;
-    --sidebar-foreground: 30 15% 20%;
-    --sidebar-primary: 40 25% 70%;
-    --sidebar-primary-foreground: 30 15% 15%;
-    --sidebar-accent: 35 25% 85%;
-    --sidebar-accent-foreground: 30 15% 15%;
-    --sidebar-border: 40 20% 85%;
-    --sidebar-ring: 40 25% 70%;
-  }
-
-  .dark {
-    --background: 40 15% 12%;
-    --foreground: 30 15% 95%;
-
-    --card: 40 15% 12%;
-    --card-foreground: 30 15% 95%;
-
-    --popover: 40 15% 12%;
-    --popover-foreground: 30 15% 95%;
-
-    --primary: 40 15% 90%;
-    --primary-foreground: 40 15% 12%;
-
-    --secondary: 35 15% 25%;
-    --secondary-foreground: 30 15% 95%;
-
-    --muted: 35 15% 25%;
-    --muted-foreground: 30 15% 65%;
-
-    --accent: 35 15% 25%;
-    --accent-foreground: 30 15% 95%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 30 15% 95%;
-
-    --border: 35 15% 25%;
-    --input: 35 15% 25%;
-    --ring: 40 25% 70%;
-
-    --sidebar-background: 40 15% 12%;
-    --sidebar-foreground: 30 15% 95%;
-    --sidebar-primary: 40 25% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 35 15% 20%;
-    --sidebar-accent-foreground: 30 15% 95%;
-    --sidebar-border: 35 15% 20%;
-    --sidebar-ring: 40 25% 70%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
   }
 }

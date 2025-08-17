@@ -64,15 +64,11 @@ const { register, handleSubmit, watch, formState: { errors } } = useForm<AuthFor
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4 transition-colors duration-300">
-      {/* Dark Mode Toggle */}
-      <div className="absolute top-4 right-4 cursor-pointer" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-        {theme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
-      </div>
 
       {/* Welcome Title */}
       <h1 className="text-3xl font-bold mb-4 text-foreground">AI-Chatbot</h1>
 
-      <Card className="w-full max-w-md shadow-lg transition-transform hover:scale-[1.02]">
+      <Card className="w-full max-w-md shadow-lg transition-transform">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-semibold">
             {isSignUp ? 'Create Account' : 'Sign In'}
@@ -162,7 +158,7 @@ const { register, handleSubmit, watch, formState: { errors } } = useForm<AuthFor
       </Card>
 
       <footer className="mt-6 text-center text-xs text-muted-foreground">
-        Created by Neeraj Pathak | GitHub: <a href="https://github.com/neerajpathak07" className="underline" target="_blank">neerajpathak07</a> | Subspace Internship Assignment
+        Created by Neeraj Pathak | GitHub: <a href="https://github.com/Neeraj-Pathak" className="underline" target="_blank">neeraj-pathak</a> | Subspace Internship Assignment
       </footer>
     </div>
   );
