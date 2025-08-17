@@ -2,9 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/components/auth/AuthProvider';
-import { 
-  MessageCircle, Plus, LogOut, User, Trash2, Edit2, ChevronsLeft, ChevronsRight, Coffee 
-} from 'lucide-react'; 
+import { MessageCircle, Plus, LogOut, Trash2, Edit2, ChevronsLeft, ChevronsRight, Coffee } from 'lucide-react';
 
 interface Chat {
   id: string;
@@ -65,10 +63,11 @@ export const ChatSidebar = ({
           <div className="flex items-center gap-2">
             <Coffee className="h-6 w-6 text-yellow-700" />
             <h1
-            className="text-lg sm:text-xl font-extrabold font-poppins tracking-wide truncate
+              className="text-lg sm:text-xl font-extrabold font-poppins tracking-wide truncate
               bg-gradient-to-r from-yellow-600 via-orange-500 to-amber-700
               bg-clip-text text-transparent drop-shadow-sm animate-gradient-move
-              bg-[length:200%_200%]">
+              bg-[length:200%_200%]"
+            >
               NEURA
             </h1>
           </div>
@@ -76,29 +75,24 @@ export const ChatSidebar = ({
 
         <div className="flex gap-2 items-center">
           {!collapsed && (
-            <Button onClick={onNewChat} size="sm" variant="outline" className="h-8 w-8 p-0">
+            <Button
+              onClick={onNewChat}
+              size="sm"
+              variant="ghost"
+              className="h-8 w-8 p-0 text-[#6F4E37] hover:text-[#6F4E37] hover:bg-white"
+            >
               <Plus className="h-4 w-4" />
             </Button>
           )}
           <Button
             onClick={() => setCollapsed(!collapsed)}
             size="sm"
-            variant="outline"
-            className="h-8 w-8 p-0 flex items-center justify-center"
+            variant="ghost"
+            className="h-8 w-8 p-0 flex items-center justify-center text-[#6F4E37] hover:text-[#6F4E37] hover:bg-white"
           >
             {collapsed ? <ChevronsRight className="h-4 w-4" /> : <ChevronsLeft className="h-4 w-4" />}
           </Button>
         </div>
-      </div>
-
-      {/* User info */}
-      <div
-        className={`p-4 flex items-center gap-2 text-sm text-[hsl(var(--sidebar-foreground))] truncate transition-all duration-300 ${
-          collapsed ? 'opacity-0 h-0 overflow-hidden' : ''
-        }`}
-      >
-        <User className="h-4 w-4" />
-        <span className="truncate">{displayName}</span>
       </div>
 
       {/* Chat list */}
@@ -118,24 +112,43 @@ export const ChatSidebar = ({
               return (
                 <div
                   key={chat.id}
-                  className={`flex items-center justify-between rounded-lg border transition-colors overflow-hidden ${
+                  className={`relative flex items-center justify-between rounded-lg border transition-colors overflow-hidden ${
                     isActive
-                      ? 'bg-[hsl(var(--sidebar-active))] text-[hsl(var(--sidebar-active-fg))]'
-                      : 'bg-[hsl(var(--card))] hover:bg-[hsl(var(--sidebar-hover))] text-[hsl(var(--card-foreground))]'
+                      ? 'bg-[hsl(var(--sidebar-active))] text-[hsl(var(--sidebar-active-fg))] border-2 border-[#6F4E37] shadow-md shadow-[#6F4E37]/40'
+                      : 'bg-[hsl(var(--card))] hover:bg-[hsl(var(--sidebar-hover))] text-[hsl(var(--card-foreground))] border-transparent'
                   }`}
                 >
+                  {/* Background image with overlay */}
+                  <div className="absolute inset-0">
+                    <img
+                      src="https://www.shutterstock.com/image-vector/simple-coffee-bean-pattern-illustration-600nw-1918951712.jpg"
+                      alt="Coffee Bean Pattern"
+                      className="w-full h-full object-cover"
+                    />
+                    <div
+                      className={`absolute inset-0 ${
+                        isActive
+                          ? 'bg-[#6F4E37]/80'
+                          : 'bg-[#ffffff]/80'
+                      }`}
+                    />
+                  </div>
+
+                  {/* Chat content */}
                   <button
                     onClick={() => onChatSelect(chat.id)}
-                    className={`flex-1 text-left p-3 flex flex-col gap-0.5 truncate ${
+                    className={`relative flex-1 text-left p-3 flex flex-col gap-0.5 truncate z-10 ${
                       collapsed ? 'justify-center items-center text-center' : ''
                     }`}
                   >
                     {!collapsed ? (
                       <>
-                        <div className="font-medium text-sm truncate">{chat.title}</div>
+                        <div className={`font-medium text-sm truncate ${isActive ? 'text-white' : 'text-[hsl(var(--card-foreground))]'}`}>
+                          {chat.title}
+                        </div>
                         {chat.lastMessage && (
                           <div
-                            className="text-xs text-[hsl(var(--sidebar-foreground))] truncate"
+                            className={`text-xs truncate ${isActive ? 'text-white/90' : 'text-[hsl(var(--sidebar-foreground))]'}`}
                             title={chat.lastMessage}
                           >
                             {chat.lastMessage.length > 50
@@ -143,23 +156,27 @@ export const ChatSidebar = ({
                               : chat.lastMessage}
                           </div>
                         )}
-                        <div className="text-xs text-[hsl(var(--sidebar-foreground))]">
+                        <div className={`text-xs ${isActive ? 'text-white/80' : 'text-[hsl(var(--sidebar-foreground))]'}`}>
                           {new Date(chat.updatedAt).toLocaleDateString()}
                         </div>
                       </>
                     ) : (
-                      <MessageCircle className="h-5 w-5 mx-auto" />
+                      <MessageCircle className={`h-5 w-5 mx-auto ${isActive ? 'text-white' : ''}`} />
                     )}
                   </button>
 
                   {!collapsed && (
-                    <div className="flex flex-col justify-center items-center gap-1 pr-2 flex-shrink-0">
+                    <div className="relative flex flex-col justify-center items-center gap-1 pr-2 flex-shrink-0 z-10">
                       {onRenameChat && (
                         <Button
                           size="sm"
                           variant="ghost"
                           onClick={() => handleRenameClick(chat.id, chat.title)}
-                          className="h-6 w-6 p-0 text-[hsl(var(--sidebar-foreground))] hover:text-[hsl(var(--sidebar-foreground))]"
+                          className={`h-6 w-6 p-0 ${
+                            isActive
+                              ? 'text-white hover:text-white hover:bg-[#6F4E37]/20'
+                              : 'text-[#6F4E37] hover:text-[#6F4E37] hover:bg-white'
+                          }`}
                         >
                           <Edit2 className="h-4 w-4" />
                         </Button>
@@ -168,7 +185,11 @@ export const ChatSidebar = ({
                         size="sm"
                         variant="ghost"
                         onClick={() => onDeleteChat(chat.id)}
-                        className="h-6 w-6 p-0 text-destructive hover:bg-destructive/10"
+                        className={`h-6 w-6 p-0 ${
+                          isActive
+                            ? 'text-white hover:text-white hover:bg-[#6F4E37]/20'
+                            : 'text-[#6F4E37] hover:text-[#6F4E37] hover:bg-white'
+                        }`}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -181,20 +202,32 @@ export const ChatSidebar = ({
         </div>
       </ScrollArea>
 
-      {/* Footer */}
-      <div className="p-4 border-t border-[hsl(var(--sidebar-border))]">
-        <Button
-          onClick={signOut}
-          variant="ghost"
-          size="sm"
-          className={`flex items-center justify-center gap-2 w-full h-10 text-[hsl(var(--sidebar-foreground))] hover:text-[hsl(var(--foreground))] ${
-            collapsed ? 'justify-center' : ''
-          }`}
-        >
-          <LogOut className="h-5 w-5" />
-          {!collapsed && 'Sign Out'}
-        </Button>
-      </div>
+{/* Footer with username and logout */}
+<div className="p-4 border-t border-[hsl(var(--sidebar-border))] flex items-center gap-2">
+  {!collapsed && (
+    <>
+      {/* Coffee bean avatar */}
+      <img
+        src="https://cdn-icons-png.flaticon.com/512/766/766407.png" // example coffee bean icon
+        alt="Avatar"
+        className="h-5 w-5 rounded-full"
+      />
+      <span className="truncate flex-1">{displayName}</span>
+    </>
+  )}
+<Button
+  onClick={() => {
+    if (confirm('Are you sure you want to log out?')) {
+      signOut();
+    }
+  }}
+  variant="ghost"
+  size="sm"
+  className={`flex items-center justify-center h-10 text-[hsl(var(--sidebar-foreground))] hover:text-[hsl(var(--foreground))]`}
+>
+  <LogOut className="h-5 w-5" />
+</Button>
+</div>
     </div>
   );
 };
