@@ -64,9 +64,11 @@ export const ChatSidebar = ({
         {!collapsed && (
           <div className="flex items-center gap-2">
             <Coffee className="h-6 w-6 text-yellow-700" />
-            <h1 className="text-lg sm:text-xl font-extrabold font-poppins tracking-wide truncate
-              bg-gradient-to-r from-yellow-600 via-orange-500 to-amber-700 
-              bg-clip-text text-transparent drop-shadow-sm animate-gradient-move">
+            <h1
+            className="text-lg sm:text-xl font-extrabold font-poppins tracking-wide truncate
+              bg-gradient-to-r from-yellow-600 via-orange-500 to-amber-700
+              bg-clip-text text-transparent drop-shadow-sm animate-gradient-move
+              bg-[length:200%_200%]">
               NEURA
             </h1>
           </div>
