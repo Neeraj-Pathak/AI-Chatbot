@@ -1,4 +1,4 @@
-// AuthProvider.tsx
+// src/components/auth/AuthProvider.tsx
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { NhostClient } from '@nhost/nhost-js';
 
@@ -32,8 +32,8 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-// Initialize Nhost Auth client
-const nhost = new NhostClient({
+// ✅ Export nhost as a named export
+export const nhost = new NhostClient({
   subdomain: import.meta.env.VITE_NHOST_SUBDOMAIN,
   region: import.meta.env.VITE_NHOST_REGION,
 });
@@ -104,10 +104,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signUp = async (email: string, password: string, displayName: string) => {
-    const { error, session } = await nhost.auth.signUp({
+    const { error } = await nhost.auth.signUp({
       email,
       password,
-      options: { metadata: { displayName } },
+      options: {
+        displayName,
+        redirectTo: "https://neura-chatbot.netlify.app",
+      },
     });
 
     if (error) {
@@ -115,15 +118,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return { error: 'Email already exists, please sign in.' };
       }
       return { error: error.message };
-    }
-
-    if (session?.user) {
-      setUser({
-        id: session.user.id,
-        email: session.user.email,
-        displayName: displayName,
-      });
-      setAccessToken(session?.accessToken || null);
     }
 
     return {};
