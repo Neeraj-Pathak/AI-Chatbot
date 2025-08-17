@@ -47,10 +47,15 @@ export const AuthForm = () => {
       if (isSignUp) {
         result = await signUp(data.email, data.password, data.name || '');
         if (result.error) throw new Error(result.error);
-        toast({ title: 'Account created', description: `Welcome, ${data.name}!` });
+
+        toast({
+          title: 'Account created',
+          description: `Please check your inbox to verify your email before logging in.`,
+        });
       } else {
         result = await signIn(data.email, data.password);
         if (result.error) throw new Error(result.error);
+
         toast({ title: 'Signed in', description: 'Welcome back!' });
       }
     } catch (error: any) {
@@ -66,7 +71,7 @@ export const AuthForm = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4 transition-colors duration-300">
-      <h1 className="text-3xl font-bold mb-4 text-foreground">AI-Chatbot</h1>
+      <h1 className="text-3xl font-bold mb-4 text-foreground">Neura Chatbot</h1>
 
       <Card className="w-full max-w-md shadow-lg transition-transform">
         <CardHeader className="text-center">
@@ -74,7 +79,9 @@ export const AuthForm = () => {
             {isSignUp ? 'Create Account' : 'Sign In'}
           </CardTitle>
           <CardDescription>
-            {isSignUp ? 'Enter your details to create your account' : 'Enter your credentials to access your chats'}
+            {isSignUp
+              ? 'Enter your details to create your account'
+              : 'Enter your credentials to access your chats'}
           </CardDescription>
         </CardHeader>
 
@@ -110,7 +117,6 @@ export const AuthForm = () => {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
 
-              {/* Only show password strength during Sign Up */}
               {isSignUp && passwordValue && (
                 <div className="mt-1 h-2 w-full rounded bg-gray-200">
                   <div
@@ -129,7 +135,7 @@ export const AuthForm = () => {
 
             <Button
               type="submit"
-              className="w-full flex items-center justify-center transition-all duration-200"
+              className="w-full flex items-center justify-center transition-all duration-200 bg-amber-700 hover:bg-amber-800"
               disabled={loading}
             >
               {loading ? (
@@ -153,7 +159,11 @@ export const AuthForm = () => {
       </Card>
 
       <footer className="mt-6 text-center text-xs text-muted-foreground">
-        Created by Neeraj Pathak | GitHub: <a href="https://github.com/Neeraj-Pathak" className="underline" target="_blank">neeraj-pathak</a> | Subspace Internship Assignment
+        Created by Neeraj Pathak | GitHub:{' '}
+        <a href="https://github.com/Neeraj-Pathak" className="underline" target="_blank">
+          neeraj-pathak
+        </a>{' '}
+        | Subspace Internship Assignment
       </footer>
     </div>
   );
