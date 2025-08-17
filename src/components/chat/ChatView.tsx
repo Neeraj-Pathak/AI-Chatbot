@@ -51,14 +51,13 @@ export const ChatView = ({ chatId, messages, onSendMessage }: ChatViewProps) => 
   if (!chatId) {
     return (
       <div className="flex-1 flex flex-col bg-chat-bg h-screen">
-        <div className="sticky top-0 z-10 border-b border-border p-4 flex items-center justify-center"></div>
-        <div className="flex-1 flex items-center justify-center text-center text-muted-foreground">
-          <Bot className="h-12 w-12 mx-auto mb-4 opacity-50" />
-          <div>
-            <h3 className="text-lg font-medium mb-2">Welcome to your AI Assistant</h3>
-            <p className="text-sm">Select a chat or start a new conversation</p>
-          </div>
-        </div>
+        <div className="flex-1 flex items-center justify-center">
+  <div className="flex flex-col items-center text-center text-muted-foreground">
+    <Bot className="h-12 w-12 mb-4 opacity-50" />
+    <h3 className="text-lg font-medium mb-2">Welcome to your AI Assistant</h3>
+    <p className="text-sm">Select a chat or start a new conversation</p>
+  </div>
+</div>
       </div>
     );
   }
