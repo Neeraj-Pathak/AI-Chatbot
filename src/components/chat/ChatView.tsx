@@ -51,10 +51,7 @@ export const ChatView = ({ chatId, messages, onSendMessage }: ChatViewProps) => 
   if (!chatId) {
     return (
       <div className="flex-1 flex flex-col bg-chat-bg h-screen">
-        {/* Fixed header */}
-        <div className="sticky top-0 z-10 border-b border-border p-4 flex items-center justify-center">
-        </div>
-
+        <div className="sticky top-0 z-10 border-b border-border p-4 flex items-center justify-center"></div>
         <div className="flex-1 flex items-center justify-center text-center text-muted-foreground">
           <Bot className="h-12 w-12 mx-auto mb-4 opacity-50" />
           <div>
@@ -71,17 +68,13 @@ export const ChatView = ({ chatId, messages, onSendMessage }: ChatViewProps) => 
       {/* Fixed header */}
       <div className="sticky top-0 z-10 border-b border-border p-4 flex flex-col items-center justify-center bg-chat-bg">
         <div className="w-24"></div> 
-        <span className="text-sm sm:text-base font-semibold bg-gradient-to-r from-yellow-700 via-orange-500 to-amber-700 
-bg-clip-text text-transparent mt-1 drop-shadow-sm 
-bg-[length:200%_200%] animate-gradient-move">
-  Warm chats, brilliant ideas
-</span>
-
-
-      <div className="w-24"></div>
-</div>
-
-
+        <span className="text-sm sm:text-base font-semibold bg-gradient-to-r from-yellow-700 via-orange-500 to-amber-700
+          bg-clip-text text-transparent mt-1 drop-shadow-sm 
+          bg-[length:200%_200%] animate-gradient-move">
+          Warm chats, brilliant ideas
+        </span>
+        <div className="w-24"></div>
+      </div>
 
       {/* Scrollable messages */}
       <ScrollArea ref={scrollAreaRef} className="flex-1 p-2 sm:p-4 overflow-x-hidden" style={{ minHeight: 0 }}>
@@ -135,7 +128,7 @@ bg-[length:200%_200%] animate-gradient-move">
         </div>
       </ScrollArea>
 
-      {/* Sticky footer */}
+      {/* Sticky footer with animated gradient button */}
       <div className="border-t border-border p-2 sm:p-4 bg-chat-bg sticky bottom-0 z-10">
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto flex gap-2">
           <Input
@@ -145,8 +138,17 @@ bg-[length:200%_200%] animate-gradient-move">
             disabled={isLoading}
             className="flex-1"
           />
-          <Button type="submit" disabled={isLoading || !inputValue.trim()}>
-            <Send className="h-4 w-4" />
+          <Button
+            type="submit"
+            disabled={isLoading || !inputValue.trim()}
+            className="relative overflow-hidden text-white font-semibold
+              bg-gradient-to-r from-yellow-600 via-orange-500 to-amber-700
+              bg-[length:200%_200%] animate-gradient-move"
+          >
+            <span className="relative z-10 flex items-center justify-center">
+              <Send className="h-4 w-4" />
+            </span>
+            <span className="absolute inset-0 opacity-20 bg-white mix-blend-overlay pointer-events-none"></span>
           </Button>
         </form>
       </div>
