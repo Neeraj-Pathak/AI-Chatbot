@@ -115,7 +115,7 @@ export const AuthForm = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4 transition-colors duration-300">
-      <h1 className="text-3xl font-bold mb-4 text-foreground">Neura Chatbot</h1>
+      <h1 className="text-3xl font-bold mb-4 text-foreground">Chatbot</h1>
 
       <Card className="w-full max-w-md shadow-lg transition-transform">
         <CardHeader className="text-center">
