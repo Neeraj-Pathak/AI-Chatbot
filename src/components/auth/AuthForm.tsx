@@ -110,7 +110,8 @@ export const AuthForm = () => {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
 
-              {passwordValue && (
+              {/* Only show password strength during Sign Up */}
+              {isSignUp && passwordValue && (
                 <div className="mt-1 h-2 w-full rounded bg-gray-200">
                   <div
                     className={clsx(
@@ -122,6 +123,7 @@ export const AuthForm = () => {
                   />
                 </div>
               )}
+
               {errors.password && <p className="text-xs text-red-500">{errors.password.message}</p>}
             </div>
 
